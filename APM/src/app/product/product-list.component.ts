@@ -1,4 +1,5 @@
 import { Component, OnInit} from "@angular/core";
+import { ProductService } from "./product.service";
 import { IProduct } from "./product";
 
 @Component({
@@ -14,6 +15,9 @@ export class ProductListComponent implements OnInit {
     imageWidth: number = 50;
     imageMargin: number = 2;
     showImage: boolean = false;
+
+    constructor(private productService: ProductService){
+    }
 
     private _listFilter: string = '';
     get listFilter():string{
@@ -61,7 +65,8 @@ export class ProductListComponent implements OnInit {
 
     ngOnInit(): void {
         console.log("Entro al onInit");
-        this.listFilter = "cart";
+        this.products = this.productService.getProducts();
+        this.filteredProducts = this.products;
     }
 
     performFilter(filterBy: string): IProduct[]{
