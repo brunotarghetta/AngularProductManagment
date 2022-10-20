@@ -10,8 +10,6 @@ import { IProduct } from "./product";
 
 export class ProductListComponent implements OnInit {
     
-   
-
     pageTitle: string = "Product List";
     imageWidth: number = 50;
     imageMargin: number = 2;
@@ -71,6 +69,10 @@ export class ProductListComponent implements OnInit {
         return this.products.filter((product: IProduct) => 
             product.productName.toLocaleLowerCase().includes(filterBy)
         );
-
     }
+
+    onrRatingClicked(message: string): void{
+        console.log(`Llego un mensaje notificando ${message}`);
+    }
+ 
 }
