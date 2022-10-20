@@ -1,6 +1,8 @@
-import { Component, OnInit} from "@angular/core";
+import { Component, OnDestroy, OnInit} from "@angular/core";
 import { ProductService } from "./product.service";
 import { IProduct } from "./product";
+import { TemplateBindingParseResult } from "@angular/compiler";
+import { Subscription } from "rxjs";
 
 @Component({
     selector: "pm-products",
@@ -9,15 +11,19 @@ import { IProduct } from "./product";
     
 })
 
-export class ProductListComponent implements OnInit {
+export class ProductListComponent implements OnInit, OnDestroy {
     
     pageTitle: string = "Product List";
     imageWidth: number = 50;
     imageMargin: number = 2;
     showImage: boolean = false;
+    errorMessage : string = ''
+    sub!: Subscription ;
 
     constructor(private productService: ProductService){
     }
+    
+   
 
     private _listFilter: string = '';
     get listFilter():string{
@@ -65,8 +71,20 @@ export class ProductListComponent implements OnInit {
 
     ngOnInit(): void {
         console.log("Entro al onInit");
-        this.products = this.productService.getProducts();
-        this.filteredProducts = this.products;
+        //this.products = this.productService.getHardProducts();
+        this.sub = this.productService.getProducts().subscribe({
+            next: products => {
+                this.products = products;
+                this.filteredProducts = this.products;    
+            },
+            error: err => this.errorMessage = err
+
+        });
+        
+    }
+
+    ngOnDestroy(): void {
+        this.sub.unsubscribe();
     }
 
     performFilter(filterBy: string): IProduct[]{
